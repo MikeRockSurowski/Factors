@@ -30,45 +30,18 @@ library(dunn.test)
 library(MVN)
 ```
 
-
-
-
 # Load the data
-
-## Constants
-
-```{r}
-
-alkaliEarths <- c('Sr', 'Ba', 'Rb')
-UTHaf <- c('U', 'Th', 'Hf')
-rareEarthsYttr <- c("La", "Ce", "Pr", "Nd", "Sm", "Eu", "Gd", "Tb", 
-                    "Dy", "Ho", "Y", "Er", "Tm", "Yb", "Lu")
-
-rare.earths.light <- c("La", "Ce", "Pr", "Nd", "Sm")
-rare.earths.mid <- c("Eu", "Gd", "Tb", "Dy", "Ho")
-rare.earths.heavy <- c("Er", "Tm", "Yb", "Lu", "Y")
-
-metalOxides <- c('Fe', 'Mn', 'V', 'Cu', 'Zn', 'Ga')
-
-```
-
 
 ## Data
 
-### PPM Data
-
 ```{r}
 ppmData <- read.csv('Data/ppm_sing_profiles_3mm.csv', sep=';')
-# paasData <- read.csv('Data/paas3mm.csv', sep=';')
 paasData <- read.csv('Data/paas_sing_profiles_3mm.csv', sep=';')
-reeAnomalies <- read.csv('Data/reeAnomalies_sing_profiles_3mm.csv', sep=';')
-# yData <- read.csv('Data/spot_fullinfo.csv', sep=';')
 yData <- read.csv('Data/spots_sing_profiles_3mm.csv', sep=';')
 
 dataIDs <- subset(ppmData, select=c(SampleID, Line, Spot, SpotID))
 dataIDs$ProfileID <- paste(dataIDs$SampleID, dataIDs$Line, sep = '-')
 
-ratios <- subset(reeAnomalies, select=-c(SampleID, Line, Spot, SpotID))
 data.PAAS <- subset(paasData, select=-c(SampleID, Line, Spot, SpotID))
 data.ppm <- subset(ppmData, select=-c(SampleID, Line, Spot, SpotID))
 data.ppm[is.na(data.ppm)] <- 0.0001
@@ -87,54 +60,9 @@ data.profile.ID <- factor(dataIDs$ProfileID)
 
 ```
 
-
-# Subcompositions
-Datasets with subcompositions of interest
-
-## PPM subcomposiions
-
-```{r}
-ppm.Ca <- data.ppm['Ca']
-
-ppm.alkaliEarths <- data.ppm[, alkaliEarths]
-ppm.rareEarthsYttr <- data.ppm[, rareEarthsYttr]
-
-ppm.rare.earths.light <- data.ppm[, rare.earths.light]
-ppm.rare.earths.mid <- data.ppm[, rare.earths.mid]
-ppm.rare.earths.heavy <- data.ppm[, rare.earths.heavy]
-
-ppm.UTHaf <- data.ppm[, UTHaf]
-ppm.metalOxides <- data.ppm[, metalOxides]
-
-```
-
-## PAAS subcompositions
-
-```{r}
-paas.alkaliEarths <- data.PAAS[, alkaliEarths]
-paas.rareEarthsYttr <- data.PAAS[, rareEarthsYttr]
-# paas.rareEarthsYGa <- data.PAAS[, rareEarthsYGa]
-
-paas.rare.earths.light <- data.PAAS[, rare.earths.light]
-paas.rare.earths.mid <- data.PAAS[, rare.earths.mid]
-paas.rare.earths.heavy <- data.PAAS[, rare.earths.heavy]
-
-paas.UTHaf <- data.PAAS[, UTHaf]
-paas.metalOxides <- data.PAAS[, metalOxides]
-```
-
 ## Centering and scaling
 
 ```{r}
-# dataPAAS[is.na(dataPAAS)] <- 0.000001
-
-# ratios transformation
-
-shiftRatios <- abs(sapply(ratios, min)) + 1
-dataShiftRatios <- sweep(ratios, 2, shiftRatios, FUN='+')
-logData.Ratios <- log(dataShiftRatios)
-logData.Scaled.Ratios <- scale(logData.Ratios, center=TRUE, scale=TRUE)
-
 # main datasets
 
 clr.data.scaled <- scale(clr.data)
@@ -142,8 +70,8 @@ clr.traces.scaled <- scale(clr.traces.data)
 
 
 ```
-# Redundancy Analysis
 
+# Redundancy Analysis
 
 ## Distance conditional
 
@@ -276,7 +204,7 @@ biplot.all.variables.comp.zoom <- baseplot.all.variables.comp +
 
 
 
-ggsave('Plots/RDA biplot - all.variables.png', 
+ggsave('Plots and figures/RDA biplots/RDA biplot - all.variables.png', 
        plot = biplot.all.variables.comp,
        bg = 'white',
        dpi = 300,
@@ -284,7 +212,7 @@ ggsave('Plots/RDA biplot - all.variables.png',
        height = 15,
        units='cm')
 
-ggsave('Plots/RDA biplot - all.variables ZOOM.png', 
+ggsave('Plots and figures/RDA biplots/RDA biplot - all.variables ZOOM.png', 
        plot = biplot.all.variables.comp.zoom,
        bg = 'white',
        dpi = 300,
@@ -402,7 +330,7 @@ biplot.locality.zoom <- baseplot.locality +
          x = "RDA-1 (74.40%)", 
          y = "RDA-2 (18.76%)")
 
-ggsave('Plots/RDA biplot - full - only locality and conditions.png',
+ggsave('Plots and figures/RDA biplots/RDA biplot - full - only locality and conditions.png',
        plot = biplot.locality,
        bg = 'white',
        dpi = 300,
@@ -410,7 +338,7 @@ ggsave('Plots/RDA biplot - full - only locality and conditions.png',
        height = 16,
        units='cm')
 
-ggsave('Plots/RDA biplot - full - only locality and conditions ZOOM.png',
+ggsave('Plots and figures/RDA biplots/RDA biplot - full - only locality and conditions ZOOM.png',
        plot = biplot.locality.zoom,
        bg = 'white',
        dpi = 300,
@@ -542,7 +470,7 @@ biplot.corth.skp.zoom <- baseplot.corth.skp +
          y = "RDA-2 (17.25%)")
   
 
-ggsave('Plots/RDA biplot - cond. locality.png',
+ggsave('Plots and figures/RDA biplots/RDA biplot - cond. locality.png',
        plot = biplot.corth.skp,
        bg = 'white',
        dpi = 300,
@@ -550,7 +478,7 @@ ggsave('Plots/RDA biplot - cond. locality.png',
        height = 15,
        units='cm')
 
-ggsave('Plots/RDA biplot - cond. locality ZOOM.png',
+ggsave('Plots and figures/RDA biplots/RDA biplot - cond. locality ZOOM.png',
        plot = biplot.corth.skp.zoom,
        bg = 'white',
        dpi = 300,
@@ -559,6 +487,7 @@ ggsave('Plots/RDA biplot - cond. locality ZOOM.png',
        units='cm')
 
 ```
+
 ## PAAS ratios
 
 ```{r}
@@ -706,7 +635,7 @@ biplot.paas.ratios.zoom <- baseplot.paas.ratios +
          y = "RDA-2 (13.17%)")
   
 
-ggsave('Plots/RDA PAAS ratios biplot.png',
+ggsave('Plots and figures/RDA biplots/RDA PAAS ratios biplot.png',
        plot = biplot.paas.ratios,
        bg = 'white',
        dpi = 300,
@@ -714,7 +643,7 @@ ggsave('Plots/RDA PAAS ratios biplot.png',
        height = 15,
        units='cm')
 
-ggsave('Plots/RDA PAAS ratios biplot ZOOM.png',
+ggsave('Plots and figures/RDA biplots/RDA PAAS ratios biplot ZOOM.png',
        plot = biplot.paas.ratios.zoom,
        bg = 'white',
        dpi = 300,
@@ -724,6 +653,6 @@ ggsave('Plots/RDA PAAS ratios biplot ZOOM.png',
 
 ```
 
-
 # Results
+
 Here we demonstrated that besides local diagenetic conditions, the skeletal parts of particular type do differ highly in their geochemistry. Besides, we also found that the thickness of the cortex is another factor, that influences the chemical composition of the bone independently - which is especially true for short profiles.
